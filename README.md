@@ -15,14 +15,17 @@ right now would be the right time for them to send this
 transaction to the network.
 ## Components Of Transaction
 
-- Transaction value
-Amount of Ether to be transferred  
-- Burnt value
-- Basefees
 
+- Transaction value
+Amount of Ether to be transferred 
+- Basefees
+The Base Fee is determined by the Ethereum network depends upon number of miners seeking to validate transactions
 - Maxfees per gas
+The Max Fee is the absolute maximum amount you are willing to pay per unit of gas to get your transaction confirmed
 - Miners Tip
+The part of transaction fees directly sent to miner, miner sort the transaction in order of tip
 - Transaction fees
+The fees user should pay to get the transaction confirmed
 - Gasusage
 Amount of gas that was used to execute 
 a transaction.
@@ -37,9 +40,10 @@ the execution of a transaction
 
 - Etherprice	
 
-
+- Burnt value
 
 - CompletionTime
+The time taken for the transaction get added into a mined block
 
 ## Data collection
 The data was extracted from ethereum.io
@@ -82,3 +86,47 @@ These 10 servers were hosted and running 24 hours a day, which made the whole ex
 
 
 
+- Each transaction stored as
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Data1.png)
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Data2.png)
+
+## Proposed Model
+
+Random forest model, in general, performs well at 
+learning complex, highly non-linear relationships; like 
+between time and both the gas price and the gas used 
+in Ethereum blockchain dataset.
+
+The model is known 
+to outperform fundamental classification and 
+regression models like naïve Bayes, polynomial and 
+linear regressors. The model proposed in the 
+paper employs random forest regressor to make 
+confirmation time predictions. 
+
+## Hyperparameter tuning in Random forest
+RandomizedSearchCV implements a randomized search over parameters, where each setting is sampled from a distribution over possible parameter values. 
+
+A random forest uses many parameters
+- n_estimators
+- max_features
+- max_ depth
+- min_samples_split
+- min_samples_leaf
+
+We found the best parameters by RandomizedSearchCV
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/BestParams.png)
+
+## Evaluation of the model
+
+Accuracy of the model on both training and test dataset was tested
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Accuracy%20of%20model.png)
+
+The model was trained with 135,712 transaction
+
+and was tested on 33,928
+
+Train Data Accuracy = 70.75%
+Test Data Accuracy = 77.18%
+
+Since millions of transaction are done on ethereum blockchain everyday . So the further improvement on the model can be performed by add more data samples to the training data.
