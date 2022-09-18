@@ -1,7 +1,7 @@
 
 # Confirmation Time Prediction in Ethereum
 
-When a user makes an exchange of ether or execute
+In Ethereum blockchain when a user makes an exchange or execute
 a contract it is considered to be a Transaction.
 
 Due to the importance of these transactions it is
@@ -9,12 +9,11 @@ very important for a user to gain some insight on how
 much time it might take for the transaction to be
 processed based on the network traffic.
 
-By gaining
-these insights ahead of time, a user can infer whether
+By knowing about conformation time beforehand, a user can infer whether
 right now would be the right time for them to send this
 transaction to the network.
-## Components Of Transaction
 
+## Components Of Transaction
 
 - Transaction value
 Amount of Ether to be transferred 
