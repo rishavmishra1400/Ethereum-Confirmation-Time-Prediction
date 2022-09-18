@@ -129,4 +129,4 @@ and was tested on 33,928
 Train Data Accuracy = 70.75%
 Test Data Accuracy = 77.18%
 
-Since millions of transaction are done on ethereum blockchain everyday . So the further improvement on the model can be performed by add more data samples to the training data.
+Since millions of transaction are done on ethereum blockchain everyday . So the further improvement on the model can be performed by adding more data samples to the training data.
