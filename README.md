@@ -72,8 +72,13 @@ Relpit provides free virtual machines for web servers.
 These 10 servers were hosted and running 24 hours a day, which made the whole extraction process 10 times faster.
 
 
+## Screenshots
+- Running server on www.replit.com virtual machine
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/1304592586a84a60d20a16c03a312c6aa4aeadbc/Screenshots/Server%20Running%20on%20Virtual%20machine.png)
 
 
+- Monitoring the servers using www.uptimerobot.com and also ping in every 5 mins
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/1304592586a84a60d20a16c03a312c6aa4aeadbc/Screenshots/Monitoring%20the%20runtime%20of%20servers.png)
 
 
 
