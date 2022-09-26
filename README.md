@@ -129,3 +129,213 @@ Train Data Accuracy = 70.75%
 Test Data Accuracy = 77.18%
 
 Since millions of transaction are done on ethereum blockchain everyday . So the further improvement on the model can be performed by adding more data samples to the training data.
+
+# Steps to regenerate result
+
+## Data collection steps
+
+
+1. Create a virtual machine on relp.com
+
+
+2. Create running server by running [keep_alive.py](https://github.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/blob/main/Data%20Collection/Servers%20with%20scraper/Servertemplate/keep_alive.py)
+
+
+3. Mention starting block and number of blocks you want to fetch
+```
+while True:
+
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
+    chrome_options.add_argument('user-agent={0}'.format(user_agent))
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    Start_Block = 14800000
+
+    TotalBlocks = 500
+
+.
+.
+```
+
+4. Run the [main.py](https://github.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/blob/main/Data%20Collection/Servers%20with%20scraper/Servertemplate/main.py)
+
+5. Data will be downloaded and stored on the virtual machine.
+
+
+
+
+
+
+Explore the [Dataset](https://drive.google.com/file/d/133Gj_O7qXpAfkVM26wgcUGEuJhZU0au6/view?usp=sharing
+) used.
+
+## EDA Steps  
+[Colab Notebook](https://colab.research.google.com/drive/1Uv4y1GttltPs9CH-UDUkEdOmdoY8yK6q#scrollTo=SbDPk5OZ82ny)
+
+
+
+
+1. Import numpy pandas 
+
+2. Upload the collected [Dataset](https://drive.google.com/file/d/133Gj_O7qXpAfkVM26wgcUGEuJhZU0au6/view?usp=sharing
+) to google drive and mount your drive.
+
+Read csv file into dataframe
+```
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from decimal import Decimal
+from google.colab import drive
+drive.mount('/content/drive')
+path = "/content/drive/MyDrive/Colab Notebooks/Data.txt"
+
+df = pd.read_csv(path)
+```
+
+
+3. Drop all the coloums with empty cells
+```
+df=df.dropna()
+df=df.reset_index()
+df=df.drop(['index'], axis=1)
+
+
+```
+4. Extracting exact ether values into floating points with slicing and type casting
+also getting time data into seconds 
+
+converting all data points to float64 , drop the coloums if not convertable
+
+```
+def isfloat(num):
+    if num is None:
+       return False
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
+def getBurntval(value):
+    list= (str(value)).split()
+    return 1000000*Decimal(list[2].replace(',', ""))
+
+
+def getg(value):
+    list= (str(value)).split()
+    return Decimal(list[-2].replace(',', ""))
+
+
+
+def getEthval(value):
+    list= (str(value)).split()
+    return 1000000*Decimal(list[0].replace(',', ""))
+.
+.
+.
+```
+
+5. Normalization Standardization using the MinMaxScalar
+
+```
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+
+scaled = scaler.fit_transform(df)
+scaled=pd.DataFrame(scaled,columns=['Burnt','TxnFees','Basefees','Maxfees/gas','Tip','Txnval','Gasusage','Gaslimit','Gasprice','Etherprice','CompletionTime'])
+scaled
+```
+
+## Model training steps
+
+1. Test Train Split
+
+```
+y = df[ 'CompletionTime']
+x = df.drop(['CompletionTime'], axis = 1)
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=101)
+print (f'x_train : {X_train.shape}')
+print (f'y_train : {y_train.shape}')
+print (f'x_test: {X_test.shape}')
+print (f'y_test: {y_test.shape}')
+```
+2. Random Search CV to get best parameters for our RandomForest
+```from sklearn.model_selection import RandomizedSearchCV
+# Number of trees in random forest
+n_estimators = [int(x) for x in np.linspace(start = 20, stop = 500, num = 50)]
+# Number of features to consider at every split
+max_features = ['auto', 'sqrt']
+# Maximum number of levels in tree
+max_depth = [int(x) for x in np.linspace(10, 1100, num = 20)]
+max_depth.append(None)
+# Minimum number of samples required to split a node
+min_samples_split = [2, 5, 10]
+# Minimum number of samples required at each leaf node
+min_samples_leaf = [1, 2, 4]
+# Method of selecting samples for training each tree
+bootstrap = [True, False]
+# Create the random grid
+random_grid = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split,
+               'min_samples_leaf': min_samples_leaf,
+               'bootstrap': bootstrap}
+print(random_grid)
+```
+3. Training the model 
+```from sklearn.model_selection import RandomizedSearchCV
+rf_random = RandomizedSearchCV(estimator= rf, param_distributions = random_grid, n_iter = 100, cv = 3, verbose=2, random_state=42, n_jobs = 40)
+rf_random.fit(X_train, y_train)  
+```
+
+4. Best parameter for our model
+```
+rf_random.best_params_
+```
+
+
+## Model Evaluation
+```
+def evaluate(model, test_features, test_labels):
+    predictions = model.predict(test_features)
+    errors = absolute(predictions - test_labels)
+    mape = 100 * np.mean(errors / test_labels)
+    accuracy = 100 - mape
+    print('Model Performance')
+
+
+    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
+    print('Accuracy = {:0.2f}%.'.format(accuracy))
+    
+    return accuracy
+
+
+
+
+
+best_random = rf_random
+print("On Train Data")
+random_accuracy = evaluate(best_random, X_train, y_train)  
+print("On Test Data")
+random_accuracy = evaluate(best_random, X_test, y_test) 
+
+```
+
+![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Accuracy%20of%20model.png)
+
+The model was trained with 135,712 transaction
+and was tested on 33,928
+
+Train Data Accuracy = 70.75 %
+Test Data Accuracy = 77.18 %
+
+Since millions of transaction are done on ethereum blockchain everyday . So the further improvement on the model can be performed by adding more data samples to the training data.
