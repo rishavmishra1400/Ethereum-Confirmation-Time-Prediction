@@ -243,6 +243,10 @@ def getEthval(value):
 .
 ```
 
+[Colab Notebook](https://colab.research.google.com/drive/1Uv4y1GttltPs9CH-UDUkEdOmdoY8yK6q#scrollTo=SbDPk5OZ82ny)
+
+
+
 5. Normalization Standardization using the MinMaxScalar
 
 ```
