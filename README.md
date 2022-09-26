@@ -119,6 +119,8 @@ We found the best parameters by RandomizedSearchCV
 
 ## Evaluation of the model
 Accuracy of the model on both training and test dataset was tested
+
+
 ![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Accuracy%20of%20model.png)
 
 The model was trained with 135,712 transaction
