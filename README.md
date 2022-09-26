@@ -114,10 +114,10 @@ A random forest uses many parameters
 - min_samples_leaf
 
 We found the best parameters by RandomizedSearchCV
+
 ![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/BestParams.png)
 
 ## Evaluation of the model
-
 Accuracy of the model on both training and test dataset was tested
 ![App Screenshot](https://raw.githubusercontent.com/rishavmishra1400/Ethereum-Confirmation-Time-Prediction/main/Screenshots/Accuracy%20of%20model.png)
 
